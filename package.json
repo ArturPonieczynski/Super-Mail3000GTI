@@ -1,0 +1,19 @@
+{
+  "name": "super-mail3000gti_backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArturPonieczynski/Super-Mail3000GTI_backend.git"
+  },
+  "author": "A.P.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ArturPonieczynski/Super-Mail3000GTI_backend/issues"
+  },
+  "homepage": "https://github.com/ArturPonieczynski/Super-Mail3000GTI_backend#readme"
+}

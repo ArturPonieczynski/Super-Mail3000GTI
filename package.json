@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/ArturPonieczynski/Super-Mail3000GTI_backend/issues"
   },
-  "homepage": "https://github.com/ArturPonieczynski/Super-Mail3000GTI_backend#readme"
+  "homepage": "https://github.com/ArturPonieczynski/Super-Mail3000GTI_backend#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.6"
+  }
 }

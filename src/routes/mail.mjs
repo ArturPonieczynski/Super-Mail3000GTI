@@ -14,7 +14,8 @@ const mailTransporterConfiguration = {
     auth: {
         user: USER_NAME_SMTP,
         pass: USER_PASSWORD_SMTP,
-},};
+    },
+};
 
 let transporter = nodemailer.createTransport(mailTransporterConfiguration);
 
@@ -34,8 +35,14 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
         // html: '',
     };
 
+    const selfMailData = {
+        ...mailData,
+        to: 'art.pon.sc@gmail.com', // @TODO Change it to config data
+    };
+
     if (req.file) {
         mailData.attachments = [{path: req.file.path},];
+        selfMailData.attachments = [{path: req.file.path},];
     }
 
     setTimeout(() => {
@@ -43,12 +50,16 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
             transporter
                 .sendMail(mailData)
                 .then((mailObject) => {
-                const {accepted, rejected} = mailObject;
-                console.log('response from sendmail [A] [R]: ', accepted, rejected);
-                // req.session.data = 'test'; @TODO not working for now, if it won't be use, uninstall express-session.
-                // res.redirect(`/?accepted="${accepted}"&rejected="${rejected}"`); // @TODO Think about safer way.
-                // res.redirect('/'); // @TODO Think about safer way.
-            });
+                    const {accepted, rejected} = mailObject;
+                    selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + text;
+
+                    transporter.sendMail(selfMailData);
+
+                    console.log('response from sendmail [Accepted] [Rejected]: ', accepted, rejected);
+                    // req.session.data = 'test'; @TODO not working for now, if it won't be use, uninstall express-session.
+                    // res.redirect(`/?accepted="${accepted}"&rejected="${rejected}"`); // @TODO Think about safer way.
+                    // res.redirect('/'); // @TODO Think about safer way.
+                });
         } catch (error) {
             console.log(error);
         }

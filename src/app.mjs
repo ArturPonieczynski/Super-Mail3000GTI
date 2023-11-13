@@ -1,7 +1,7 @@
 import express from 'express';
-import {homeRouter} from "./routes/home.js";
-import {loginRouter} from "./routes/login.js";
-import {mailRouter} from "./routes/mail.js";
+import {homeRouter} from "./routes/home.mjs";
+import {loginRouter} from "./routes/login.mjs";
+import {mailRouter} from "./routes/mail.mjs";
 
 const app = express();
 

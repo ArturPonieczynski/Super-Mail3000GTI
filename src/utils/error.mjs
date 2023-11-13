@@ -1,4 +1,4 @@
-import {homeRouter} from "../routes/home.js";
+import {homeRouter} from "../routes/home.mjs";
 
 export class ValidationError extends Error {}
 

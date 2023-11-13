@@ -1,7 +1,7 @@
 import {Router} from "express";
 import nodemailer from "nodemailer";
-import {upload} from "../utils/multer.js";
-import {config} from "../config.js";
+import {upload} from "../utils/multer.mjs";
+import {config} from "../config.mjs";
 
 export const mailRouter = Router();
 

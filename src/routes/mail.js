@@ -37,7 +37,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
 
     const selfMailData = {
         ...mailData,
-        to: 'art.pon.sc@gmail.com', // @TODO Change it to config data
+        to: config.EMAIL_SEND_FROM_SMTP,
     };
 
     if (req.file) {
@@ -51,14 +51,12 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
                 .sendMail(mailData)
                 .then((mailObject) => {
                     const {accepted, rejected} = mailObject;
+                    selfMailData.subject = `Wiadomość do: ${accepted} | ` + subject;
                     selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + text;
 
                     transporter.sendMail(selfMailData);
 
                     console.log('response from sendmail [Accepted] [Rejected]: ', accepted, rejected);
-                    // req.session.data = 'test'; @TODO not working for now, if it won't be use, uninstall express-session.
-                    // res.redirect(`/?accepted="${accepted}"&rejected="${rejected}"`); // @TODO Think about safer way.
-                    // res.redirect('/'); // @TODO Think about safer way.
                 });
         } catch (error) {
             console.log(error);

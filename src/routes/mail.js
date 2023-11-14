@@ -52,7 +52,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
                 .then((mailObject) => {
                     const {accepted, rejected} = mailObject;
                     selfMailData.subject = `Wiadomość do: ${accepted} | ` + subject;
-                    selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + text;
+                    selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + text + "\n\nPozdrawiam\nJerzy Mieńkowski";
 
                     transporter.sendMail(selfMailData);
 

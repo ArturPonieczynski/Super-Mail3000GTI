@@ -31,7 +31,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
         cc: "",
         bcc: "",
         subject: subject,
-        text: text,
+        text: text + "\n\nPozdrawiam\nJerzy Mieńkowski",
         // html: '',
     };
 

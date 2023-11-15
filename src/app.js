@@ -1,15 +1,17 @@
-import express from 'express';
+import express from "express";
 import {homeRouter} from "./routes/home.js";
 import {loginRouter} from "./routes/login.js";
 import {mailRouter} from "./routes/mail.js";
+import {handleError} from "./utils/error.js";
 
 const app = express();
 
 const apiRouter = express.Router();
 
-app.use(express.urlencoded({
-    extended: true,
-}));
+/** Depends on if app going to use url variables */
+// app.use(express.urlencoded({
+//     extended: true,
+// }));
 app.use(express.json());
 
 app.use('/api', apiRouter);
@@ -49,7 +51,7 @@ app.all('/', (req, res) => {
 
 });
 
-// app.use(handleError);
+app.use(handleError);
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

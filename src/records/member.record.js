@@ -44,11 +44,13 @@ export class MemberRecord {
         const [result] = await pool.execute("SELECT * FROM `members` WHERE `id` = :id", {
             id: id,
         });
-        return result;
+        return result.length === 0 ? null : new MemberRecord(result);
     }
 
     static async findAll() {
         const [result] = await pool.execute("SELECT * FROM `members`");
-        return result;
+        return result.map((obj) => {
+            new MemberRecord(obj);
+        });
     };
 }

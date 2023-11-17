@@ -27,4 +27,7 @@ export const config = {
     JWT_SECRET: process.env['JWT_SECRET'],
     JWT_EXPIRES_ACCESS: process.env['JWT_EXPIRES_ACCESS'],
     JWT_EXPIRES_REFRESH: process.env['JWT_EXPIRES_REFRESH'],
+
+    MOCKUP_USER_NAME: process.env['MOCKUP_USER_NAME'],
+    MOCKUP_USER_PASSWORD: process.env['MOCKUP_USER_PASSWORD'],
 };

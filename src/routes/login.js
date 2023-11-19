@@ -6,12 +6,11 @@ export const loginRouter = Router();
 
 loginRouter.post('/', (req, res) => {
     if (req.body.name !== config.MOCKUP_USER_NAME) {
-        res.json({login: 'Zła nazwa użytkownika.'})
-        throw new ValidationError('Zła nazwa użytkownika.')
+        throw new ValidationError('Nieprawidłowa nazwa użytkownika.')
     }
     if (req.body.password !== config.MOCKUP_USER_PASSWORD) {
-        res.json({login: 'Złe hasło.'})
-        throw new ValidationError('Złe hasło.')
+        throw new ValidationError('Złe hasło.');
+    } else {
+        res.json({login: true});
     }
-    res.json({login: 'ok'});
 })

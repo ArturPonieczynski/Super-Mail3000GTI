@@ -2,6 +2,5 @@
 .idea
 .env
 /dist/
-package-lock.json
-.babelrc
 /tmp/
+

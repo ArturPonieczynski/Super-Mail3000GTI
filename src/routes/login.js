@@ -11,6 +11,6 @@ loginRouter.post('/', (req, res) => {
     if (req.body.password !== config.MOCKUP_USER_PASSWORD) {
         throw new ValidationError('Złe hasło.');
     } else {
-        res.json({login: true});
+        res.json({response: true});
     }
 })

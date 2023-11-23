@@ -5,6 +5,7 @@ import {config} from "../config.js";
 export const loginRouter = Router();
 
 loginRouter.post('/', (req, res) => {
+    console.log(req.ips);
     if (req.body.name !== config.MOCKUP_USER_NAME) {
         throw new ValidationError('Nieprawidłowa nazwa użytkownika.')
     }

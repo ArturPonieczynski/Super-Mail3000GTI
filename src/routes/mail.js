@@ -45,7 +45,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
         selfMailData.attachments = [{path: req.file.path},];
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
         try {
             transporter
                 .sendMail(mailData)
@@ -57,11 +57,13 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
                     transporter.sendMail(selfMailData);
 
                     console.log('response from sendmail [Accepted] [Rejected]: ', accepted, rejected);
-                    res.json({response: true});
                 });
         } catch (error) {
             console.log(error);
+            selfMailData.text = error;
+            await transporter.sendMail(selfMailData);
             res.json({error: error});
         }
     }, delay);
+    res.json({response: true});
 });

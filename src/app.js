@@ -5,13 +5,14 @@ import {loginRouter} from "./routes/login.js";
 import {mailRouter} from "./routes/mail.js";
 import {handleError} from "./utils/error.js";
 import cors from "cors";
+import {config} from "./config.js";
 // import methodOverride from "method-override";
 
 const app = express();
 
 const apiRouter = express.Router();
 
-app.use(cors({origin: 'http://localhost:3000'}));
+app.use(cors({origin: ['http://localhost:3000', config.APP_DOMAIN]}));
 
 /** Prepared method-override for future form action method PUT/PATCH/DELETE */
 // app.use(methodOverride('_method'));

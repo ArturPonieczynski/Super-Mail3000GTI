@@ -37,7 +37,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
 
     const selfMailData = {
         ...mailData,
-        to: config.APP_ENV === 'development' ? 'art.pon.sc@gmail.com' : config.EMAIL_SEND_FROM_SMTP,
+        to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : 'art.pon.sc@gmail.com',
     };
 
     if (req.file) {

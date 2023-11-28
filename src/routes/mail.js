@@ -2,6 +2,7 @@ import {Router} from "express";
 import nodemailer from "nodemailer";
 import {upload} from "../utils/multer.js";
 import {config} from "../config.js";
+import {MemberRecord} from "../records/member.record.js";
 
 export const mailRouter = Router();
 
@@ -18,6 +19,11 @@ const mailTransporterConfiguration = {
 };
 
 let transporter = nodemailer.createTransport(mailTransporterConfiguration);
+
+mailRouter.get('/all', async (req, res) => {
+    const memberList = await MemberRecord.findAll();
+    res.json(memberList);
+})
 
 mailRouter.post('/', upload.single('file'), (req, res) => {
     const {mailTo, dw, udw, subject, text, date, time} = req.body;

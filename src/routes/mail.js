@@ -26,14 +26,14 @@ mailRouter.get('/all', async (req, res) => {
 })
 
 mailRouter.post('/', upload.single('file'), (req, res) => {
-    const {mailTo, dw, udw, subject, text, date, time} = req.body;
+    const {mailTo, dw, udw, selectedEmails, subject, text, date, time} = req.body;
 
     const timeToSend = new Date(`${date} ${time}`).getTime();
     const delay = timeToSend - (new Date().getTime());
 
     const mailData = {
         from: config.EMAIL_SEND_FROM_SMTP,
-        to: mailTo,
+        to: mailTo + ',' + selectedEmails,
         cc: dw,
         bcc: udw,
         subject: subject,
@@ -65,7 +65,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
                     console.log('response from sendmail [Accepted] [Rejected]: ', accepted, rejected);
                 });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             selfMailData.text = error;
             await transporter.sendMail(selfMailData);
             res.json({error: error});

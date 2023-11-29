@@ -2,6 +2,8 @@ import {Router} from "express";
 import nodemailer from "nodemailer";
 import {upload} from "../utils/multer.js";
 import {config} from "../config.js";
+import {MemberRecord} from "../records/member.record.js";
+import {handleError} from "../utils/error.js";
 
 export const mailRouter = Router();
 
@@ -19,15 +21,20 @@ const mailTransporterConfiguration = {
 
 let transporter = nodemailer.createTransport(mailTransporterConfiguration);
 
+mailRouter.get('/all', async (req, res) => {
+    const memberList = await MemberRecord.findAll();
+    res.json(memberList);
+})
+
 mailRouter.post('/', upload.single('file'), (req, res) => {
-    const {mailTo, dw, udw, subject, text, date, time} = req.body;
+    const {mailTo, dw, udw, selectedEmails, subject, text, date, time} = req.body;
 
     const timeToSend = new Date(`${date} ${time}`).getTime();
     const delay = timeToSend - (new Date().getTime());
 
     const mailData = {
         from: config.EMAIL_SEND_FROM_SMTP,
-        to: mailTo,
+        to: mailTo + ',' + selectedEmails,
         cc: dw,
         bcc: udw,
         subject: subject,
@@ -59,10 +66,9 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
                     console.log('response from sendmail [Accepted] [Rejected]: ', accepted, rejected);
                 });
         } catch (error) {
-            console.log(error);
             selfMailData.text = error;
             await transporter.sendMail(selfMailData);
-            res.json({error: error});
+            handleError(error);
         }
     }, delay);
     res.json({response: true});

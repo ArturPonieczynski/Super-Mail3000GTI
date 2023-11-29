@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import {upload} from "../utils/multer.js";
 import {config} from "../config.js";
 import {MemberRecord} from "../records/member.record.js";
-import {ValidationError} from "../utils/error.js";
+import {handleError} from "../utils/error.js";
 
 export const mailRouter = Router();
 
@@ -68,7 +68,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
         } catch (error) {
             selfMailData.text = error;
             await transporter.sendMail(selfMailData);
-            throw new ValidationError;
+            handleError(error);
         }
     }, delay);
     res.json({response: true});

@@ -29,14 +29,30 @@ mailRouter.get('/all', async (req, res) => {
 mailRouter.post('/', upload.single('file'), (req, res) => {
     const {mailTo, dw, udw, selectedEmails, subject, text, date, time} = req.body;
 
+    let defaultEmails = [];
+    let ccEmails = [];
+    let bccEmails = [];
+
+    const selectedEmailsArray = JSON.parse(selectedEmails);
+
+    selectedEmailsArray.map((obj) => {
+        if (obj.method === 'default') {
+            defaultEmails.push(obj.email);
+        } else if (obj.method === 'cc') {
+            ccEmails.push(obj.email);
+        } else if (obj.method === 'bcc') {
+            bccEmails.push(obj.email);
+        }
+    });
+
     const timeToSend = new Date(`${date} ${time}`).getTime();
     const delay = timeToSend - (new Date().getTime());
 
     const mailData = {
         from: config.EMAIL_SEND_FROM_SMTP,
-        to: mailTo + ',' + selectedEmails,
-        cc: dw,
-        bcc: udw,
+        to: mailTo ? mailTo + ',' + defaultEmails.join(',') : defaultEmails.join(','),
+        cc: dw ? dw + ',' + ccEmails.join(',') : ccEmails.join(','),
+        bcc: udw ? udw + ',' + bccEmails.join(',') : bccEmails.join(','),
         subject: subject,
         text: text + "\n\nPozdrawiam\nJerzy Mieńkowski",
         // html: '',

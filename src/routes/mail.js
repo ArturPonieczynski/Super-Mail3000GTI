@@ -50,9 +50,9 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
 
     const mailData = {
         from: config.EMAIL_SEND_FROM_SMTP,
-        to: mailTo + ',' + defaultEmails,
-        cc: dw + ',' + ccEmails,
-        bcc: udw + ',' + bccEmails,
+        to: mailTo ? mailTo + ',' + defaultEmails.join(',') : defaultEmails.join(','),
+        cc: dw ? dw + ',' + ccEmails.join(',') : ccEmails.join(','),
+        bcc: udw ? udw + ',' + bccEmails.join(',') : bccEmails.join(','),
         subject: subject,
         text: text + "\n\nPozdrawiam\nJerzy Mieńkowski",
         // html: '',

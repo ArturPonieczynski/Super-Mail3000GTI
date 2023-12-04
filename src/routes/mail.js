@@ -38,9 +38,9 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
     selectedEmailsArray.map((obj) => {
         if (obj.method === 'default') {
             defaultEmails.push(obj.email);
-        } if (obj.method === 'cc') {
+        } else if (obj.method === 'cc') {
             ccEmails.push(obj.email);
-        } if (obj.method === 'bcc') {
+        } else if (obj.method === 'bcc') {
             bccEmails.push(obj.email);
         }
     });

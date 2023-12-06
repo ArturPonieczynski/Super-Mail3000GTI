@@ -48,9 +48,9 @@ export class MemberRecord {
     }
 
     static async findAll() {
-        const [result] = await pool.execute("SELECT * FROM `members`");
+        const [result] = await pool.execute("SELECT * FROM `members` ORDER BY `description` ASC");
         return result.map((obj) => {
-            new MemberRecord(obj);
+            return new MemberRecord(obj);
         });
     };
 }

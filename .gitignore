@@ -3,4 +3,4 @@
 .env
 /dist/
 /tmp/
-
+/src/tmp.js

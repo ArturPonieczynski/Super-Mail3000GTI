@@ -12,6 +12,17 @@ const app = express();
 
 const apiRouter = express.Router();
 
+// const allowedHostname = ['supermail3000git.pl', 'localhost'];
+// app.use((req, res, next) => {
+//     console.log(req.hostname);
+//     const clientIp = req.hostname;
+//     if (allowedHostname.includes(clientIp)) {
+//         next();
+//     } else {
+//         res.status(403).send('Access denied');
+//     }
+// });
+
 app.use(cors({origin: ['http://localhost:3000', config.APP_DOMAIN]}));
 
 /** Prepared method-override for future form action method PUT/PATCH/DELETE */
@@ -28,7 +39,7 @@ apiRouter.use('/login', loginRouter);
 apiRouter.use('/mail', mailRouter);
 
 app.use(handleError);
-const port = process.env.PORT || 3001;
-app.listen(port, () => {
+const port = process.env.APP_PORT || 3001;
+app.listen( port, '0.0.0.0', () => {
     console.log(`Server is running on port ${port}`);
 });

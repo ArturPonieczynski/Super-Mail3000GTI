@@ -6,15 +6,15 @@ export class UserRecord {
     constructor(obj) {
         this.validate(obj);
         this.id = obj.id || uuid();
-        this.userName = obj.userName;
-        this.password = obj.password;
+        this.user_name = obj.user_name;
+        this.password_hash = obj.password_hash;
     }
 
     validate(obj) {
-        if (!obj.userName || obj.userName.length > 50) {
-            throw new ValidationError('E-mail jest nieprawidłowy. Podaj poprawny e-mail i nie przekraczaj 50 znaków.');
+        if (!obj.user_name || obj.user_name.length > 50) {
+            throw new ValidationError('Nazwa użytkownika jest nieprawidłowa i nie przekraczaj 50 znaków.');
         }
-        if (obj.password.length > 36 || obj.password.length < 4) {
+        if (obj.password_hash.length > 60 || obj.password_hash.length < 4) {
             throw new ValidationError('Hasło jest nieprawidłowe. Użyj od 4 do 36 znaków.')
         }
     }
@@ -22,15 +22,15 @@ export class UserRecord {
     async insert() {
         await pool.execute("INSERT INTO `users` (`id`,`user_name`, `password`) VALUES (:id, :userName, :password)", {
             id: this.id,
-            userName: this.userName,
-            password: this.password,
+            user_name: this.user_name,
+            password_hash: this.password_hash,
         });
         return this.id;
     }
 
     static async delete(id) {
-        const user = await this.findOne(id);
-        if (user.lenght > 0) {
+        const user = await this.findOneByName(id);
+        if (user) {
             const result = await pool.execute("DELETE FROM `users` WHERE `id` = :id", {
                 id: id,
             });
@@ -40,11 +40,11 @@ export class UserRecord {
         }
     }
 
-    static async findOne(id) {
-        const [result] = await pool.execute("SELECT * FROM `users` WHERE `id` = :id", {
-            id: id,
+    static async findOneByName(user_name) {
+        const [result] = await pool.execute("SELECT * FROM `users` WHERE `user_name` = :user_name", {
+            user_name: user_name,
         });
-        return result.length === 0 ? null : new UserRecord(result);
+        return result.length === 0 ? null : new UserRecord(result[0]);
     }
 
     static async findAll() {

@@ -6,27 +6,22 @@ import {mailRouter} from "./routes/mail.js";
 import {handleError} from "./utils/error.js";
 import cors from "cors";
 import {config} from "./config.js";
-// import methodOverride from "method-override";
 
 const app = express();
 
 const apiRouter = express.Router();
 
-// const allowedHostname = ['supermail3000git.pl', 'localhost'];
-// app.use((req, res, next) => {
-//     console.log(req.hostname);
-//     const clientIp = req.hostname;
-//     if (allowedHostname.includes(clientIp)) {
-//         next();
-//     } else {
-//         res.status(403).send('Access denied');
-//     }
-// });
+const allowedIps = ['127.0.0.1', '188.210.222.87'];
+app.use((req, res, next) => {
+    if (allowedIps.includes(req.ip)) {
+        next();
+    } else {
+        res.status(403).send('Access denied');
+    }
+});
 
 app.use(cors({origin: ['http://localhost:3000', config.APP_DOMAIN]}));
 
-/** Prepared method-override for future form action method PUT/PATCH/DELETE */
-// app.use(methodOverride('_method'));
 /** Depends on if app going to use url variables */
 // app.use(express.urlencoded({
 //     extended: true,

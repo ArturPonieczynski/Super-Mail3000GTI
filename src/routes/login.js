@@ -1,17 +1,24 @@
 import Router from 'express';
 import {ValidationError} from "../utils/error.js";
-import {config} from "../config.js";
+import {UserRecord} from "../records/user.record.js";
+import {compare} from "bcrypt";
 
 export const loginRouter = Router();
 
-loginRouter.post('/', (req, res) => {
-    console.log(req.ips);
-    if (req.body.name !== config.MOCKUP_USER_NAME) {
-        throw new ValidationError('Nieprawidłowa nazwa użytkownika.')
+loginRouter.post('/', async (req, res, next) => {
+    try {
+        const user = await UserRecord.findOneByName(req.body.name);
+        if (!user || user.user_name !== req.body.name) {
+            throw new ValidationError('Nieprawidłowa nazwa użytkownika.');
+        } else {
+            const isMatch = await compare(req.body.password, user.password_hash);
+            if (!isMatch) {
+                throw new ValidationError('Nieprawidłowe hasło.');
+            } else {
+                res.json({response: true});
+            }
+        }
+    } catch (err) {
+        next(err); // Pass error to middleware for error handling.
     }
-    if (req.body.password !== config.MOCKUP_USER_PASSWORD) {
-        throw new ValidationError('Złe hasło.');
-    } else {
-        res.json({response: true});
-    }
-})
+});

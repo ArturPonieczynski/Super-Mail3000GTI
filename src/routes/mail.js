@@ -58,15 +58,16 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
         // html: '',
     };
 
+    if (req.file) {
+        mailData.attachments = [{path: req.file.path},];
+    }
+
     const selfMailData = {
         ...mailData,
         to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : 'art.pon.sc@gmail.com',
+        cc: '',
+        bcc: '',
     };
-
-    if (req.file) {
-        mailData.attachments = [{path: req.file.path},];
-        selfMailData.attachments = [{path: req.file.path},];
-    }
 
     setTimeout(async () => {
         try {

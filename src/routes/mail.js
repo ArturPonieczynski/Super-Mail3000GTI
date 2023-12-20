@@ -54,7 +54,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
         cc: dw ? dw + ',' + ccEmails.join(',') : ccEmails.join(','),
         bcc: udw ? udw + ',' + bccEmails.join(',') : bccEmails.join(','),
         subject: subject,
-        text: text + "\n\nPozdrawiam\nJerzy Mieńkowski",
+        text: text + "\n\nPozdrawiam\nJerzy Mieńkowski\n",
         // html: '',
     };
 
@@ -76,7 +76,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
                 .then((mailObject) => {
                     const {accepted, rejected} = mailObject;
                     selfMailData.subject = `Wiadomość do: ${accepted} | ` + subject;
-                    selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + text + "\n\nPozdrawiam\nJerzy Mieńkowski";
+                    selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + mailData.text;
 
                     transporter.sendMail(selfMailData);
 

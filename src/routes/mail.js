@@ -27,7 +27,7 @@ mailRouter.get('/all', async (req, res) => {
 })
 
 mailRouter.post('/', upload.single('file'), (req, res) => {
-    const {mailTo, dw, udw, selectedEmails, subject, text, date, time} = req.body;
+    const {mailTo, cc, bcc, selectedEmails, subject, text, date, time} = req.body;
 
     let defaultEmails = [];
     let ccEmails = [];
@@ -51,22 +51,23 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
     const mailData = {
         from: config.EMAIL_SEND_FROM_SMTP,
         to: mailTo ? mailTo + ',' + defaultEmails.join(',') : defaultEmails.join(','),
-        cc: dw ? dw + ',' + ccEmails.join(',') : ccEmails.join(','),
-        bcc: udw ? udw + ',' + bccEmails.join(',') : bccEmails.join(','),
+        cc: cc ? cc + ',' + ccEmails.join(',') : ccEmails.join(','),
+        bcc: bcc ? bcc + ',' + bccEmails.join(',') : bccEmails.join(','),
         subject: subject,
-        text: text + "\n\nPozdrawiam\nJerzy Mieńkowski",
+        text: text + "\n\nPozdrawiam\nJerzy Mieńkowski\n",
         // html: '',
-    };
-
-    const selfMailData = {
-        ...mailData,
-        to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : 'art.pon.sc@gmail.com',
     };
 
     if (req.file) {
         mailData.attachments = [{path: req.file.path},];
-        selfMailData.attachments = [{path: req.file.path},];
     }
+
+    const selfMailData = {
+        ...mailData,
+        to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : 'art.pon.sc@gmail.com',
+        cc: '',
+        bcc: '',
+    };
 
     setTimeout(async () => {
         try {
@@ -75,7 +76,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
                 .then((mailObject) => {
                     const {accepted, rejected} = mailObject;
                     selfMailData.subject = `Wiadomość do: ${accepted} | ` + subject;
-                    selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + text + "\n\nPozdrawiam\nJerzy Mieńkowski";
+                    selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + mailData.text;
 
                     transporter.sendMail(selfMailData);
 

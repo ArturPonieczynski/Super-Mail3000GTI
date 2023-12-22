@@ -27,7 +27,7 @@ mailRouter.get('/all', async (req, res) => {
 })
 
 mailRouter.post('/', upload.single('file'), (req, res) => {
-    const {mailTo, cc, bcc, selectedEmails, subject, text, date, time} = req.body;
+    const {mailTo, cc, bcc, selectedEmails, subject, text, emailFooter, date, time} = req.body;
 
     let defaultEmails = [];
     let ccEmails = [];
@@ -54,7 +54,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
         cc: cc ? cc + ',' + ccEmails.join(',') : ccEmails.join(','),
         bcc: bcc ? bcc + ',' + bccEmails.join(',') : bccEmails.join(','),
         subject: subject,
-        text: text + "\n\nPozdrawiam\nJerzy Mieńkowski\n",
+        text: text + '\n\n' + emailFooter + '\n',
         // html: '',
     };
 
@@ -64,7 +64,7 @@ mailRouter.post('/', upload.single('file'), (req, res) => {
 
     const selfMailData = {
         ...mailData,
-        to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : 'art.pon.sc@gmail.com',
+        to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : config.APP_DEV_EMAIL,
         cc: '',
         bcc: '',
     };

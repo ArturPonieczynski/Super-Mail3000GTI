@@ -1,6 +1,6 @@
 {
   "name": "super-mail3000gti_backend",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "",
   "main": "src/app.js",
   "type": "module",

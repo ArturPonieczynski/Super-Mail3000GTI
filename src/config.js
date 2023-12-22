@@ -7,6 +7,8 @@ const APP_ENV = process.env['APP_ENV'] || 'development';
 
 export const config = {
     APP_ENV,
+    APP_DEV_EMAIL: process.env['APP_DEV_EMAIL'],
+
     APP_IP: process.env['APP_IP'],
     APP_PORT: process.env['APP_PORT'],
 

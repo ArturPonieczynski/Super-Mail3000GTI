@@ -35,6 +35,7 @@ apiRouter.use('/mail', mailRouter);
 
 app.use(handleError);
 const port = process.env.APP_PORT || 3001;
-app.listen( port, '0.0.0.0', () => {
-    console.log(`Server is running on port ${port}`);
+const hostName = config.APP_ENV === 'production' ? config.APP_IP : '127.0.0.1';
+app.listen( port, hostName, () => {
+    console.log(`Server listen at ${hostName} and running on port ${port}`);
 });

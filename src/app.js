@@ -2,7 +2,7 @@ import express from "express";
 import "express-async-errors";
 import {homeRouter} from "./routes/home.js";
 import {loginRouter} from "./routes/login.js";
-import {mailRouter} from "./routes/mail.js";
+import {mailRouter} from "./routes/email.js";
 import {handleError} from "./utils/error.js";
 import cors from "cors";
 import {config} from "./config.js";

@@ -3,6 +3,7 @@ import {v4 as uuid} from "uuid";
 import {ValidationError} from "../utils/error.js";
 
 export class MemberRecord {
+
     constructor(obj) {
         this.validate(obj);
         this.id = obj.id || uuid();
@@ -30,7 +31,7 @@ export class MemberRecord {
 
     static async delete(id) {
         const member = await this.findOne(id);
-        if (member.length > 0) {
+        if (member) {
             const result = await pool.execute("DELETE FROM `members` WHERE `id` = :id", {
                 id: id,
             });
@@ -44,13 +45,11 @@ export class MemberRecord {
         const [result] = await pool.execute("SELECT * FROM `members` WHERE `id` = :id", {
             id: id,
         });
-        return result.length === 0 ? null : new MemberRecord(result);
+        return result.length === 0 ? null : new MemberRecord(...result);
     }
 
     static async findAll() {
         const [result] = await pool.execute("SELECT * FROM `members` ORDER BY `description` ASC");
-        return result.map((obj) => {
-            return new MemberRecord(obj);
-        });
+        return result.map(obj => new MemberRecord(obj));
     };
 }

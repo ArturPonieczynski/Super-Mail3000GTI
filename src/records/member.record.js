@@ -15,15 +15,16 @@ export class MemberRecord {
 
         const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        if (
+        if (!obj) {
+            throw new ValidationError('Nie podano żadnych danych.')
+        } else if (
             !obj.email ||
             typeof obj.email !== 'string' ||
             !emailRegex.test(obj.email) ||
             obj.email.length > 50
         ) {
             throw new ValidationError('E-mail jest nieprawidłowy. Podaj poprawny e-mail i nie przekraczaj 50 znaków.');
-        }
-        if (typeof obj.description !== 'string' || obj.description.length > 45) {
+        } else if (typeof obj.description !== 'string' || obj.description.length > 45) {
             throw new ValidationError('Opis jest za długi. Możesz użyć maksymalnie 45 znaków.')
         }
     }

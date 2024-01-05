@@ -1,6 +1,6 @@
 import {pool} from "../utils/database.js";
 import {v4 as uuid} from "uuid";
-import {ValidationError} from "../utils/error.js";
+import {ServerError, ValidationError} from "../utils/error.js";
 
 export class MemberRecord {
 
@@ -40,7 +40,7 @@ export class MemberRecord {
            return this.id;
        } catch (error) {
            console.error('Error occurred during member insertion:', error);
-           throw new Error('Nie udało się dodać nowego adresu e-mail.');
+           throw new ServerError('Nie udało się dodać nowego adresu e-mail.');
        }
     }
 
@@ -57,7 +57,7 @@ export class MemberRecord {
             }
         } catch (error) {
             console.error('Error occurred during member deletion:', error);
-            throw new Error('Nie udało się usunąć adresu e-mail.');
+            throw new ServerError('Nie udało się usunąć adresu e-mail.');
         }
     }
 
@@ -70,7 +70,7 @@ export class MemberRecord {
 
         } catch (error) {
             console.error('Error occurred during member search by id:', error);
-            throw new Error(`Nie udało się lub nie znaleziono adresu e-mail.`);
+            throw new ServerError(`Nie udało się lub nie znaleziono adresu e-mail.`);
         }
     }
 
@@ -81,7 +81,7 @@ export class MemberRecord {
 
         } catch (error) {
             console.error('Error occurred during member search all:', error);
-            throw new Error('Nie udało się pobrać adresów e-mail z bazy danych.');
+            throw new ServerError('Nie udało się pobrać adresów e-mail z bazy danych.');
         }
     };
 }

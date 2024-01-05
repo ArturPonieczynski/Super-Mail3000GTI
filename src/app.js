@@ -31,7 +31,7 @@ app.use(express.json());
 app.use('/api', apiRouter);
 apiRouter.use('/home', homeRouter);
 apiRouter.use('/login', loginRouter);
-apiRouter.use('/mail', mailRouter);
+apiRouter.use('/email', mailRouter);
 
 app.use(handleError);
 const port = process.env.APP_PORT || 3001;

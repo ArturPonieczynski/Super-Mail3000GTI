@@ -2,6 +2,8 @@ export class ValidationError extends Error {}
 
 export class NotFoundError extends Error {}
 
+export class ServerError extends Error {}
+
 export const handleError = (error, req, res, next) => {
     if (error instanceof NotFoundError) {
         res
@@ -10,6 +12,10 @@ export const handleError = (error, req, res, next) => {
     } else if (error instanceof ValidationError) {
         res
             .status(400)
+            .json({error: error.message});
+    } else if (error instanceof ServerError) {
+        res
+            .status(500)
             .json({error: error.message});
     } else {
         console.error(error);

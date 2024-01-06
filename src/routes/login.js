@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {NotFoundError} from "../utils/error.js";
+import {NotFoundError, ServerError} from "../utils/error.js";
 import {UserRecord} from "../records/user.record.js";
 import {compare} from "bcrypt";
 
@@ -19,7 +19,7 @@ loginRouter.post('/', async (req, res, next) => {
             }
         }
     } catch (error) {
-        console.error(error);
-        next(error); // Pass error to middleware for error handling.
+        console.error('Error occurred on path POST /api/login.', error);
+        throw new ServerError(`Nie udało się zalogować. ${error.message}`, error);
     }
 });

@@ -12,16 +12,16 @@ mailRouter.get('/all', async (req, res) => {
         res.json(memberList);
     } catch (error) {
         console.error('Error occurred on path GET /api/mail/all', error)
-        throw new ServerError(`Błąd podczas ładowania książki adresów. ${error.message}`);
+        throw new ServerError(`Błąd podczas ładowania książki adresów. ${error.message}`, error);
     }
 });
 
-mailRouter.post('/', upload.single('file'), (req, res) => {
+mailRouter.post('/', upload.single('file'), (req, res, next) => {
     try {
-        EmailService.sendMailService(req);
+        EmailService.sendEmail(req, next);
         res.json({ok: true});
     } catch (error) {
-        console.error('Error occurred on path POST /api/mail.', error)
-        throw new ServerError(`Błąd wysyłania email-a. ${error.message}`);
+        console.error('Error occurred on path POST /api/email.', error)
+        throw new ServerError(`Błąd wysyłania email-a. ${error.message}`, error);
     }
 });

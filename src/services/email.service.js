@@ -1,10 +1,26 @@
 import {config} from "../config.js";
 import {transporter} from "../utils/email.config.js";
-import {handleError} from "../utils/error.js";
+import {ValidationError} from "../utils/error.js";
 
 export class EmailService {
 
-    static async sendMailService(req) {
+    static validateEmails(input) {
+        const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        const emails = input.replace(/\s+/g, '').split(',');
+
+        const invalidEmails = emails.filter(email => !emailRegex.test(email));
+
+        return invalidEmails.length <= 0;
+    }
+
+    static validateSelectedEmails(input) {
+        const invalidEmails = input.filter(obj => !this.validateEmails(obj.email));
+
+        return invalidEmails.length <= 0;
+    }
+
+    static sendEmail(req, next) {
         const {
             mailTo,
             cc,
@@ -17,11 +33,27 @@ export class EmailService {
             time
         } = req.body;
 
+        const selectedEmailsArray = JSON.parse(selectedEmails);
+
+        if (
+            !mailTo &&
+            !cc &&
+            !bcc &&
+            selectedEmailsArray.length === 0
+        ) {
+            throw new ValidationError('Nie podano żadnego adresu e-mail.');
+        } else if (
+            (!(this.validateEmails(mailTo)) && mailTo) ||
+            (!(this.validateEmails(cc)) && cc) ||
+            (!(this.validateEmails(bcc)) && bcc) ||
+            !this.validateSelectedEmails(selectedEmailsArray)
+        ) {
+            throw new ValidationError('Podano niepoprawny adres e-mail.');
+        }
+
         let defaultEmails = [];
         let ccEmails = [];
         let bccEmails = [];
-
-        const selectedEmailsArray = JSON.parse(selectedEmails);
 
         selectedEmailsArray.map((obj) => {
             if (obj.method === 'default') {
@@ -55,7 +87,7 @@ export class EmailService {
         };
 
         const timeToSend = new Date(`${date} ${time}`).getTime();
-        const delay = timeToSend - (new Date().getTime());
+        const delay = timeToSend - Date.now();
 
         setTimeout(async () => {
             try {
@@ -66,11 +98,17 @@ export class EmailService {
 
                 await transporter.sendMail(selfMailData);
 
-                console.log('response from sendmail [Accepted] [Rejected]: ', accepted, rejected);
+                console.log('Response from nodemailer [Accepted] [Rejected]: ', accepted, rejected);
             } catch (error) {
-                selfMailData.text = error;
-                await transporter.sendMail(selfMailData);
-                handleError(error);
+                const errorMailData = {...selfMailData};
+                errorMailData.text = error;
+
+                try {
+                    await transporter.sendMail(errorMailData);
+                    next(error);
+                } catch (nextError) {
+                    next(nextError);
+                }
             }
         }, delay);
     }

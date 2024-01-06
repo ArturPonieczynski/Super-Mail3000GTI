@@ -1,21 +1,49 @@
-export class ValidationError extends Error {}
+export class ValidationError extends Error {
+    static statusCode = 400;
 
-export class NotFoundError extends Error {}
+    constructor(message) {
+        super(message);
+        this.name = 'ValidationError';
+        this.statusCode = ValidationError.statusCode;
+    }
+}
 
-export class ServerError extends Error {}
+export class NotFoundError extends Error {
+    static statusCode = 404;
+
+    constructor(message) {
+        super(message);
+        this.name = 'NotFoundError';
+        this.statusCode = NotFoundError.statusCode;
+    }
+}
+
+export class ServerError extends Error {
+    static statusCode = 500;
+
+    constructor(message, originalError = null) {
+        super(message);
+        this.name = 'ServerError';
+        this.originalError = originalError;
+
+        if (originalError instanceof ValidationError) {
+            this.statusCode = ValidationError.statusCode;
+        } else if (originalError instanceof NotFoundError) {
+            this.statusCode = NotFoundError.statusCode;
+        } else {
+            this.statusCode = ServerError.statusCode;
+        }
+    }
+}
 
 export const handleError = (error, req, res, next) => {
-    if (error instanceof NotFoundError) {
+    if (
+        error instanceof NotFoundError ||
+        error instanceof ValidationError ||
+        error instanceof ServerError
+    ) {
         res
-            .status(404)
-            .json({error: error.message});
-    } else if (error instanceof ValidationError) {
-        res
-            .status(400)
-            .json({error: error.message});
-    } else if (error instanceof ServerError) {
-        res
-            .status(500)
+            .status(error.statusCode)
             .json({error: error.message});
     } else {
         console.error(error);

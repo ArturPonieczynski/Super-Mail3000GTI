@@ -1,4 +1,4 @@
-import {pool} from "../utils/database.js";
+import {pool} from "../utils/database.config.js";
 import {v4 as uuid} from "uuid";
 import {ValidationError} from "../utils/error.js";
 import {hash, genSalt} from "bcrypt";

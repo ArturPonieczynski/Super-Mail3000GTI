@@ -3,7 +3,7 @@ import "express-async-errors";
 import {homeRouter} from "./routes/home.js";
 import {loginRouter} from "./routes/login.js";
 import {mailRouter} from "./routes/email.js";
-import {handleError} from "./utils/error.js";
+import {AccessDeniedError, handleError} from "./utils/error.js";
 import cors from "cors";
 import {config} from "./config.js";
 
@@ -16,7 +16,7 @@ app.use((req, res, next) => {
     if (allowedIps.includes(req.ip)) {
         next();
     } else {
-        res.status(403).send('Access denied');
+        throw new AccessDeniedError('Brak dostępu.');
     }
 });
 

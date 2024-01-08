@@ -18,6 +18,16 @@ export class NotFoundError extends Error {
     }
 }
 
+export class AccessDeniedError extends Error {
+    static statusCode = 403;
+
+    constructor(message) {
+        super(message);
+        this.name = 'AccessDeniedError';
+        this.statusCode = AccessDeniedError.statusCode;
+    }
+}
+
 export class ServerError extends Error {
     static statusCode = 500;
 

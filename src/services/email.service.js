@@ -33,7 +33,11 @@ export class EmailService {
             time
         } = req.body;
 
-        const selectedEmailsArray = JSON.parse(selectedEmails);
+        let selectedEmailsArray = [];
+
+        if (selectedEmails) {
+            selectedEmailsArray = JSON.parse(selectedEmails);
+        }
 
         if (
             !mailTo &&
@@ -93,13 +97,14 @@ export class EmailService {
             try {
                 const temp = await transporter.sendMail(mailData);
                 const {accepted, rejected} = temp;
-                selfMailData.subject = `Wiadomość do: ${accepted} | ` + subject;
-                selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + mailData.text;
-
-                await transporter.sendMail(selfMailData);
+                // selfMailData.subject = `Wiadomość do: ${accepted} | ` + subject;
+                // selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + mailData.text;
+                //
+                // await transporter.sendMail(selfMailData);
 
                 console.log('Response from nodemailer [Accepted] [Rejected]: ', accepted, rejected);
             } catch (error) {
+                console.log(rejected)
                 const errorMailData = {...selfMailData};
                 errorMailData.text = error;
 

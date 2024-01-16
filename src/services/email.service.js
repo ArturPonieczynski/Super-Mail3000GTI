@@ -20,7 +20,16 @@ export class EmailService {
         return invalidEmails.length <= 0;
     }
 
-    static sendEmail(req, next) {
+    static async sendErrorEmail(rejectedEmail, message) {
+        await transporter.sendMail({
+            from: config.EMAIL_SEND_FROM_SMTP,
+            to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : config.APP_DEV_EMAIL,
+            subject: 'Error: ' + rejectedEmail,
+            text: message,
+        });
+    }
+
+    static sendEmail(req) {
         const {
             mailTo,
             cc,
@@ -83,37 +92,37 @@ export class EmailService {
             mailData.attachments = [{path: req.file.path},];
         }
 
-        const selfMailData = {
-            ...mailData,
-            to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : config.APP_DEV_EMAIL,
-            cc: '',
-            bcc: '',
-        };
-
         const timeToSend = new Date(`${date} ${time}`).getTime();
         const delay = timeToSend - Date.now();
 
         setTimeout(async () => {
             try {
-                const temp = await transporter.sendMail(mailData);
-                const {accepted, rejected} = temp;
-                // selfMailData.subject = `Wiadomość do: ${accepted} | ` + subject;
-                // selfMailData.text = `##### Wiadomość wysłana do: ${accepted}  #####\n\n` + mailData.text;
-                //
-                // await transporter.sendMail(selfMailData);
+                const sendMailResponse = await transporter.sendMail(mailData);
+                const {accepted, rejected, rejectedErrors} = sendMailResponse;
+
+                if (rejected.length > 0) {
+                    const emails = rejected.join(', ');
+                    const errorInfo = rejectedErrors.toString();
+                    await this.sendErrorEmail(emails, errorInfo);
+                }
+
+                const selfMailData = {
+                    ...mailData,
+                    to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : config.APP_DEV_EMAIL,
+                    subject: `Wiadomość do: ${accepted} | ` + subject,
+                    cc: '',
+                    bcc: '',
+                    text: `##### Wiadomość wysłana do: ${accepted} #####\n\n` + mailData.text,
+                };
+
+                await transporter.sendMail(selfMailData);
 
                 console.log('Response from nodemailer [Accepted] [Rejected]: ', accepted, rejected);
-            } catch (error) {
-                console.log(rejected)
-                const errorMailData = {...selfMailData};
-                errorMailData.text = error;
 
-                try {
-                    await transporter.sendMail(errorMailData);
-                    next(error);
-                } catch (nextError) {
-                    next(nextError);
-                }
+            } catch (error) {
+                const emails = error.rejected.join(', ');
+                await this.sendErrorEmail(emails, error.message);
+                console.error(error);
             }
         }, delay);
     }

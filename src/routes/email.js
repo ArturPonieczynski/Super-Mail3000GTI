@@ -16,12 +16,12 @@ mailRouter.get('/all', async (req, res) => {
     }
 });
 
-mailRouter.post('/', upload.single('file'), (req, res, next) => {
+mailRouter.post('/', upload.single('file'), async (req, res) => {
     try {
-        EmailService.sendEmail(req, next);
+        EmailService.sendEmail(req); // this function will return promise till e-mail is actually sent
         res.json({ok: true});
     } catch (error) {
-        console.error('Error occurred on path POST /api/email.', error)
-        throw new ServerError(`Błąd wysyłania email-a. ${error.message}`, error);
+            console.error('Error occurred on path POST /api/email.', error);
+            throw new ServerError(`Błąd wysyłania email-a. ${error.message}`, error);
     }
 });

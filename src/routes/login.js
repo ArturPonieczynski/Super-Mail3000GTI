@@ -5,13 +5,14 @@ import {compare} from "bcrypt";
 
 export const loginRouter = Router();
 
-loginRouter.post('/', async (req, res, next) => {
+loginRouter.post('/', async (req, res) => {
     try {
         const user = await UserRecord.findOneByName(req.body.name);
+
         if (!user) {
             throw new NotFoundError('Nieprawidłowe dane logowania.');
         } else {
-            const isMatch = await compare(req.body.password, user.password_hash);
+            const isMatch = await compare(req.body.password, user.passwordHash);
             if (!isMatch) {
                 throw new NotFoundError('Nieprawidłowe dane logowania.');
             } else {

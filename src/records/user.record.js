@@ -18,7 +18,7 @@ export class UserRecord {
             throw new ValidationError('Nie podano żadnych danych.');
         } else if (!obj.user_name || obj.user_name.length > 50) {
             throw new ValidationError('Nazwa użytkownika jest nieprawidłowa. Nie przekraczaj 50 znaków.');
-        } else if (!obj.passwordHash) {
+        } else if (!obj.password_hash) {
             if (obj.password.length < 4 || obj.password.length > 60) {
                 throw new ValidationError('Hasło jest nieprawidłowe. Użyj od 4 do 60 znaków.');
             }

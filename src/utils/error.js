@@ -36,17 +36,19 @@ export class ServerError extends Error {
         this.name = 'ServerError';
         this.originalError = originalError;
 
-        if (originalError instanceof ValidationError) {
+        if (this.originalError instanceof ValidationError) {
             this.statusCode = ValidationError.statusCode;
-        } else if (originalError instanceof NotFoundError) {
+        } else if (this.originalError instanceof NotFoundError) {
             this.statusCode = NotFoundError.statusCode;
+        } else if (this.originalError instanceof AccessDeniedError) {
+            this.statusCode = AccessDeniedError.statusCode;
         } else {
             this.statusCode = ServerError.statusCode;
         }
     }
 }
 
-export const handleError = (error, req, res, next) => {
+export const handleError = (error, req, res) => {
     if (
         error instanceof NotFoundError ||
         error instanceof ValidationError ||

@@ -4,27 +4,27 @@ import {ServerError, ValidationError} from "../utils/error.js";
 
 export class MemberRecord {
 
-    constructor(obj) {
-        this.validate(obj);
-        this.id = obj.id || uuid();
-        this.email = obj.email;
-        this.description = obj.description;
+    constructor(memberRecordObj) {
+        this.validate(memberRecordObj);
+        this.id = memberRecordObj.id || uuid();
+        this.email = memberRecordObj.email;
+        this.description = memberRecordObj.description;
     }
 
-    validate(obj) {
+    validate(memberRecordObj) {
 
         const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        if (!obj) {
+        if (!memberRecordObj) {
             throw new ValidationError('Nie podano żadnych danych.')
         } else if (
-            !obj.email ||
-            typeof obj.email !== 'string' ||
-            !emailRegex.test(obj.email) ||
-            obj.email.length > 50
+            !memberRecordObj.email ||
+            typeof memberRecordObj.email !== 'string' ||
+            !emailRegex.test(memberRecordObj.email) ||
+            memberRecordObj.email.length > 50
         ) {
             throw new ValidationError('E-mail jest nieprawidłowy. Podaj poprawny e-mail i nie przekraczaj 50 znaków.');
-        } else if (typeof obj.description !== 'string' || obj.description.length > 45) {
+        } else if (typeof memberRecordObj.description !== 'string' || memberRecordObj.description.length > 45) {
             throw new ValidationError('Opis jest za długi. Możesz użyć maksymalnie 45 znaków.')
         }
     }

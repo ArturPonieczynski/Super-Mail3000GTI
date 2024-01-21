@@ -5,21 +5,21 @@ import {hash, genSalt} from "bcrypt";
 
 export class UserRecord {
 
-    constructor(obj) {
-        this.validate(obj);
-        this.id = obj.id || uuid();
-        this.userName = obj.user_name;
-        this.passwordHash = obj.password_hash || null;
-        this.password = obj.password || null;
+    constructor(userRecordObj) {
+        this.validate(userRecordObj);
+        this.id = userRecordObj.id || uuid();
+        this.userName = userRecordObj.user_name;
+        this.passwordHash = userRecordObj.password_hash || null;
+        this.password = userRecordObj.password || null;
     }
 
-    validate(obj) {
-        if (!obj) {
+    validate(userRecordObj) {
+        if (!userRecordObj) {
             throw new ValidationError('Nie podano żadnych danych.');
-        } else if (!obj.user_name || obj.user_name.length > 50) {
+        } else if (!userRecordObj.user_name || userRecordObj.user_name.length > 50) {
             throw new ValidationError('Nazwa użytkownika jest nieprawidłowa. Nie przekraczaj 50 znaków.');
-        } else if (!obj.password_hash) {
-            if (obj.password.length < 4 || obj.password.length > 60) {
+        } else if (!userRecordObj.password_hash) {
+            if (userRecordObj.password.length < 4 || userRecordObj.password.length > 60) {
                 throw new ValidationError('Hasło jest nieprawidłowe. Użyj od 4 do 60 znaków.');
             }
         }

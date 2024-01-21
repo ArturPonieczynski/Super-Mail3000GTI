@@ -66,7 +66,8 @@ export class MemberRecord {
             const [result] = await pool.execute("SELECT * FROM `members` WHERE `id` = :id", {
                 id: id,
             });
-            return result.length === 0 ? null : new MemberRecord(...result);
+
+            return result.length === 0 ? null : new MemberRecord(result[0]);
 
         } catch (error) {
             console.error('Error occurred during member search by id:', error);

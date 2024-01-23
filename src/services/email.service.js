@@ -68,7 +68,7 @@ export class EmailService {
         let ccEmails = [];
         let bccEmails = [];
 
-        selectedEmailsArray.map((obj) => {
+        selectedEmailsArray.forEach((obj) => {
             if (obj.method === 'default') {
                 defaultEmails.push(obj.email);
             } else if (obj.method === 'cc') {

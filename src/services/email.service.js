@@ -92,7 +92,17 @@ export class EmailService {
             mailData.attachments = [{path: req.file.path},];
         }
 
-        const timeToSend = new Date(`${date} ${time}`).getTime();
+        const validateDateTime = (date, time) => {
+            const dateTime = new Date(`${date}T${time}`);
+            if (!date && !time) {
+                return Date.now();
+            } else if (isNaN(dateTime)) {
+                throw new ValidationError('Nieprawidłowa data.');
+            }
+            return dateTime.getTime();
+        }
+
+        const timeToSend = validateDateTime(date, time);
         const delay = timeToSend - Date.now();
 
         setTimeout(async () => {

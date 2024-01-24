@@ -22,6 +22,6 @@ mailRouter.post('/', upload.single('file'), async (req, res) => {
         res.json({ok: true});
     } catch (error) {
             console.error('Error occurred on path POST /api/email.', error);
-            throw new ServerError(`Błąd wysyłania email-a. ${error.message}`, error);
+            throw new ServerError(`Błąd wysyłania wiadomości email. ${error.message}`, error);
     }
 });

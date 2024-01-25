@@ -1,6 +1,7 @@
 import {config} from "../config.js";
 import {transporter} from "../utils/email.config.js";
 import {ValidationError} from "../utils/error.js";
+import {getCorrectedDateTime, validateDateTime} from "./date.service.js";
 
 export class EmailService {
 
@@ -39,7 +40,8 @@ export class EmailService {
             text,
             emailFooter,
             date,
-            time
+            time,
+            userTimeZoneOffset,
         } = req.body;
 
         let selectedEmailsArray = [];
@@ -92,18 +94,8 @@ export class EmailService {
             mailData.attachments = [{path: req.file.path},];
         }
 
-        const validateDateTime = (date, time) => {
-            const dateTime = new Date(`${date}T${time}`);
-            if (!date && !time) {
-                return Date.now();
-            } else if (isNaN(dateTime)) {
-                throw new ValidationError('Nieprawidłowa data.');
-            }
-            return dateTime.getTime();
-        }
-
-        const timeToSend = validateDateTime(date, time);
-        const delay = timeToSend - Date.now();
+        const userLocalDateTimeToSend = validateDateTime(date, time, userTimeZoneOffset);
+        const delayMs = userLocalDateTimeToSend.getTime() - getCorrectedDateTime(userTimeZoneOffset);
 
         setTimeout(async () => {
             try {
@@ -134,6 +126,6 @@ export class EmailService {
                 await this.sendErrorEmail(emails, error.message);
                 console.error(error);
             }
-        }, delay);
+        }, delayMs);
     }
 }

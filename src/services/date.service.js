@@ -1,8 +1,17 @@
 import {ValidationError} from "../utils/error.js";
 
-export const validateDateTime = (date, time) => {
+export const getCorrectedDateTime = userTimeZoneOffset => {
+    const serverDateTime = new Date();
+    const serverTimeOffsetMs = serverDateTime.getTimezoneOffset() * 60 * 1000;
+    const userTimeOffsetMs = Number(userTimeZoneOffset) * 60 * 1000;
+    const correctedTime = new Date(serverDateTime.getTime() + serverTimeOffsetMs - userTimeOffsetMs);
+
+    return correctedTime.getTime();
+};
+
+export const validateDateTime = (date, time, userTimeZoneOffset) => {
     if (!date && !time) {
-        return Date.now();
+        return new Date(getCorrectedDateTime(userTimeZoneOffset));
     }
 
     const userLocalDateTime = new Date(`${date}T${time}`);

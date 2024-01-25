@@ -80,11 +80,13 @@ export class EmailService {
             }
         });
 
+        const emailListInstruction = (email, methodArrayName) => email ? email + ',' + methodArrayName.join(',') : methodArrayName.join(',');
+
         const mailData = {
             from: config.EMAIL_SEND_FROM_SMTP,
-            to: mailTo ? mailTo + ',' + defaultEmails.join(',') : defaultEmails.join(','),
-            cc: cc ? cc + ',' + ccEmails.join(',') : ccEmails.join(','),
-            bcc: bcc ? bcc + ',' + bccEmails.join(',') : bccEmails.join(','),
+            to: emailListInstruction(mailTo, defaultEmails),
+            cc: emailListInstruction(cc, ccEmails),
+            bcc: emailListInstruction(bcc, bccEmails),
             subject: subject,
             text: text + '\n\n' + emailFooter + '\n',
             // html: '',

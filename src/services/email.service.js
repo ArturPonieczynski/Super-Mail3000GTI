@@ -99,7 +99,11 @@ export class EmailService {
         const userLocalDateTimeToSend = validateDateTime(date, time, userTimeZoneOffset);
         const delayMs = userLocalDateTimeToSend.getTime() - getCorrectedDateTime(userTimeZoneOffset);
 
-        if (delayMs > 2147483647) {throw new ValidationError('Zbyt odległy czas zaplanowanej wiadomości. Maksymalny okres planowania to około 28,5 dni. Podaj wcześniejszą datę aby kontynuować.')}
+        if (delayMs > 2147483647) {
+            throw new ValidationError(
+                'Zbyt odległy czas zaplanowanej wiadomości. Maksymalny okres planowania to około 28,5 dni. Podaj wcześniejszą datę aby kontynuować.'
+            )
+        }
 
         setTimeout(async () => {
             try {

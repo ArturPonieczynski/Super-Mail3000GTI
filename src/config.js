@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv';
-import * as process from 'process';
 
 dotenv.config();
 
@@ -32,4 +31,5 @@ export const config = {
 
     MOCKUP_USER_NAME: process.env['MOCKUP_USER_NAME'],
     MOCKUP_USER_PASSWORD: process.env['MOCKUP_USER_PASSWORD'],
+    MAX_SAFE_DELAY_MS: Number(process.env['MAX_SAFE_DELAY_MS']),
 };

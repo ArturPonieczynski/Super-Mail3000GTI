@@ -2,8 +2,8 @@ import express from "express";
 import "express-async-errors";
 import {homeRouter} from "./routes/home.js";
 import {loginRouter} from "./routes/login.js";
-import {mailRouter} from "./routes/mail.js";
-import {handleError} from "./utils/error.js";
+import {mailRouter} from "./routes/email.js";
+import {AccessDeniedError, handleError} from "./utils/error.js";
 import cors from "cors";
 import {config} from "./config.js";
 
@@ -16,7 +16,7 @@ app.use((req, res, next) => {
     if (allowedIps.includes(req.ip)) {
         next();
     } else {
-        res.status(403).send('Access denied');
+        throw new AccessDeniedError('Brak dostępu.');
     }
 });
 
@@ -31,7 +31,7 @@ app.use(express.json());
 app.use('/api', apiRouter);
 apiRouter.use('/home', homeRouter);
 apiRouter.use('/login', loginRouter);
-apiRouter.use('/mail', mailRouter);
+apiRouter.use('/email', mailRouter);
 
 app.use(handleError);
 const port = process.env.APP_PORT || 3001;

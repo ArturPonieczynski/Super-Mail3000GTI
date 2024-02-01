@@ -3,6 +3,13 @@ import {transporter} from "../utils/email.config.js";
 import {ValidationError} from "../utils/error.js";
 import {getCorrectedDateTime, validateDateTime} from "./date.service.js";
 
+const {
+    APP_ENV,
+    MAX_SAFE_DELAY_MS,
+    EMAIL_SEND_FROM_SMTP,
+    APP_DEV_EMAIL,
+} = config;
+
 export class EmailService {
 
     static validateEmails(input) {
@@ -23,8 +30,8 @@ export class EmailService {
 
     static async sendErrorEmail(rejectedEmail, message) {
         await transporter.sendMail({
-            from: config.EMAIL_SEND_FROM_SMTP,
-            to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : config.APP_DEV_EMAIL,
+            from: EMAIL_SEND_FROM_SMTP,
+            to: APP_ENV === 'production' ? EMAIL_SEND_FROM_SMTP : APP_DEV_EMAIL,
             subject: 'Error: ' + rejectedEmail,
             text: message,
         });
@@ -83,7 +90,7 @@ export class EmailService {
         const emailListInstruction = (email, methodArrayName) => email ? email + ',' + methodArrayName.join(',') : methodArrayName.join(',');
 
         const mailData = {
-            from: config.EMAIL_SEND_FROM_SMTP,
+            from: EMAIL_SEND_FROM_SMTP,
             to: emailListInstruction(mailTo, defaultEmails),
             cc: emailListInstruction(cc, ccEmails),
             bcc: emailListInstruction(bcc, bccEmails),
@@ -99,7 +106,11 @@ export class EmailService {
         const userLocalDateTimeToSend = validateDateTime(date, time, userTimeZoneOffset);
         const delayMs = userLocalDateTimeToSend.getTime() - getCorrectedDateTime(userTimeZoneOffset);
 
-        if (delayMs > 2147483647) {throw new ValidationError('Zbyt odległy czas zaplanowanej wiadomości. Maksymalny okres planowania to około 28,5 dni. Podaj wcześniejszą datę aby kontynuować.')}
+        if (delayMs > MAX_SAFE_DELAY_MS) {
+            throw new ValidationError(
+                'Zbyt odległy czas zaplanowanej wiadomości. Maksymalny okres planowania to około 28,5 dni. Podaj wcześniejszą datę aby kontynuować.'
+            )
+        }
 
         setTimeout(async () => {
             try {
@@ -114,7 +125,7 @@ export class EmailService {
 
                 const selfMailData = {
                     ...mailData,
-                    to: config.APP_ENV === 'production' ? config.EMAIL_SEND_FROM_SMTP : config.APP_DEV_EMAIL,
+                    to: APP_ENV === 'production' ? EMAIL_SEND_FROM_SMTP : APP_DEV_EMAIL,
                     subject: `Wiadomość do: ${accepted} | ` + subject,
                     cc: '',
                     bcc: '',

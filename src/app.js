@@ -6,10 +6,12 @@ import {mailRouter} from "./routes/email.js";
 import {AccessDeniedError, handleError} from "./utils/error.js";
 import cors from "cors";
 import {config} from "./config.js";
+import {rateLimiter} from "./utils/rate-limiter.js";
 
 const app = express();
-
 const apiRouter = express.Router();
+
+app.use(rateLimiter);
 
 const allowedIps = ['127.0.0.1', '188.210.222.87'];
 app.use((req, res, next) => {

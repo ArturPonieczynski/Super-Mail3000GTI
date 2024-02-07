@@ -7,6 +7,9 @@ import {AccessDeniedError, handleError} from "./utils/error.js";
 import cors from "cors";
 import {config} from "./config.js";
 import {rateLimiter} from "./utils/rate-limiter.js";
+import cron from 'node-cron';
+
+cron.schedule('0 0 0 1 * *', () => {console.log('test')});
 
 const app = express();
 const apiRouter = express.Router();

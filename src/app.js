@@ -8,8 +8,9 @@ import {AccessDeniedError, handleError} from "./utils/error.js";
 import cors from "cors";
 import {rateLimiter} from "./utils/rate-limiter.js";
 import cron from 'node-cron';
+import {deleteOldFiles} from "./utils/cron-task.js";
 
-cron.schedule('0 0 0 1 * *', () => {console.log('test')});
+cron.schedule('0 0 0 1 * *', () => deleteOldFiles()); // ones per month
 
 const app = express();
 const apiRouter = express.Router();

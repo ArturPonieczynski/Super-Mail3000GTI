@@ -10,38 +10,41 @@ import {rateLimiter} from "./utils/rate-limiter.js";
 import cron from 'node-cron';
 import {deleteOldFiles} from "./utils/cron-task.js";
 
+const {APP_ENV, APP_PORT, APP_DOMAIN, APP_IP} = config;
+
 cron.schedule('0 0 0 1 * *', () => deleteOldFiles()); // ones per month
 
 const app = express();
-const apiRouter = express.Router();
 
+app.use(cors({origin: ['http://localhost:3000', APP_DOMAIN]}));
 app.use(rateLimiter);
 
-const allowedIps = ['127.0.0.1', '188.210.222.87'];
+const allowedFetchHeaders = [
+    'same-origin',
+    'same-site',
+    APP_ENV !== 'production' ? 'none' : '',
+    APP_ENV !== 'production' ? 'cross-site' : '',
+];
+
 app.use((req, res, next) => {
-    if (allowedIps.includes(req.ip)) {
+    if (allowedFetchHeaders.includes(req.headers['sec-fetch-site'])) {
         next();
     } else {
         throw new AccessDeniedError('Brak dostępu.');
     }
 });
 
-app.use(cors({origin: ['http://localhost:3000', config.APP_DOMAIN]}));
-
-/** Depends on if app going to use url variables */
-// app.use(express.urlencoded({
-//     extended: true,
-// }));
 app.use(express.json());
 
+const apiRouter = express.Router();
 app.use('/api', apiRouter);
 apiRouter.use('/home', homeRouter);
 apiRouter.use('/login', loginRouter);
 apiRouter.use('/email', mailRouter);
 
 app.use(handleError);
-const port = process.env.APP_PORT || 3001;
-const hostName = config.APP_ENV === 'production' ? config.APP_IP : '127.0.0.1';
+const port = APP_PORT || 3001;
+const hostName = APP_ENV === 'production' ? APP_IP : '127.0.0.1';
 app.listen( port, hostName, () => {
     console.log(`Server listen at ${hostName} and running on port ${port}`);
 });

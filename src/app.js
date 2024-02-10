@@ -9,8 +9,9 @@ import cors from "cors";
 import {rateLimiter} from "./utils/rate-limiter.js";
 import cron from 'node-cron';
 import {deleteOldFiles} from "./utils/cron-task.js";
+import {isProductionYesNo} from "./utils/is-production.js";
 
-const {APP_ENV, APP_PORT, APP_DOMAIN, APP_IP} = config;
+const {APP_PORT, APP_DOMAIN, APP_IP} = config;
 
 cron.schedule('0 0 0 1 * *', () => deleteOldFiles()); // ones per month
 
@@ -22,8 +23,8 @@ app.use(rateLimiter);
 const allowedFetchHeaders = [
     'same-origin',
     'same-site',
-    APP_ENV !== 'production' ? 'none' : '',
-    APP_ENV !== 'production' ? 'cross-site' : '',
+    isProductionYesNo('', 'none'),
+    isProductionYesNo('', 'cross-site'),
 ];
 
 app.use((req, res, next) => {
@@ -43,8 +44,8 @@ apiRouter.use('/login', loginRouter);
 apiRouter.use('/email', mailRouter);
 
 app.use(handleError);
-const port = APP_PORT || 3001;
-const hostName = APP_ENV === 'production' ? APP_IP : '127.0.0.1';
+const port = isProductionYesNo(APP_PORT, 3001);
+const hostName = isProductionYesNo(APP_IP, '127.0.0.1');
 app.listen( port, hostName, () => {
     console.log(`Server listen at ${hostName} and running on port ${port}`);
 });

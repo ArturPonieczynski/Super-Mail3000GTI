@@ -27,10 +27,16 @@ loginRouter.post('/', async (req, res) => {
                     },
                     JWT_SECRET,
                     {expiresIn: JWT_EXPIRES_ACCESS}
-                )
+                );
+
+                res.cookie('jwt', token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict',
+                });
+
                 res.json({
                     ok: true,
-                    token,
                 });
             }
         }

@@ -10,6 +10,7 @@ import {rateLimiter} from "./utils/rate-limiter.js";
 import cron from 'node-cron';
 import {deleteOldFiles} from "./utils/cron-task.js";
 import {isProductionYesNo} from "./utils/is-production.js";
+import passport from "./utils/passport-strategy.js";
 
 const {APP_PORT, APP_DOMAIN, APP_IP} = config;
 
@@ -19,6 +20,8 @@ const app = express();
 
 app.use(cors({origin: ['http://localhost:3000', APP_DOMAIN]}));
 app.use(rateLimiter);
+
+app.use(passport.initialize());
 
 const allowedFetchHeaders = [
     'same-origin',

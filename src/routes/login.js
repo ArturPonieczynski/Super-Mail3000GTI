@@ -3,6 +3,7 @@ import {NotFoundError, ServerError} from "../utils/error.js";
 import jwt from "jsonwebtoken";
 import {config} from "../config.js";
 import passport from "passport";
+import {isProductionYesNo} from "../utils/is-production.js";
 
 const {JWT_SECRET, JWT_EXPIRES_ACCESS} = config;
 
@@ -30,11 +31,11 @@ loginRouter.post('/', (req, res, next) => {
                 JWT_SECRET,
                 {expiresIn: JWT_EXPIRES_ACCESS}
             );
-
             res.cookie('jwt', token, {
                 httpOnly: true,
-                secure: true,
+                secure: isProductionYesNo(true, false),
                 sameSite: 'strict',
+                // maxAge: 1000 * 60 * 60 * 16,
             });
 
             res.json({

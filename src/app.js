@@ -19,9 +19,11 @@ cron.schedule('0 0 0 1 * *', () => deleteOldFiles()); // ones per month
 
 const app = express();
 
-app.use(cors({origin: ['http://localhost:3000', APP_DOMAIN]}));
+app.use(cors({
+    origin: ['http://localhost:3000', APP_DOMAIN],
+    credentials: true,
+}));
 app.use(rateLimiter);
-
 app.use(passport.initialize());
 
 const allowedFetchHeaders = [

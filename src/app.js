@@ -11,6 +11,7 @@ import cron from 'node-cron';
 import {deleteOldFiles} from "./utils/cron-task.js";
 import {isProductionYesNo} from "./utils/is-production.js";
 import passport from "./utils/passport-strategy.js";
+import cookieParser from "cookie-parser";
 
 const {APP_PORT, APP_DOMAIN, APP_IP} = config;
 
@@ -38,13 +39,14 @@ app.use((req, res, next) => {
     }
 });
 
+app.use(cookieParser());
 app.use(express.json());
 
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
-apiRouter.use('/home', homeRouter);
+apiRouter.use('/home', passport.authenticate('jwt', { session: false }), homeRouter);
 apiRouter.use('/login', loginRouter);
-apiRouter.use('/email', mailRouter);
+apiRouter.use('/email', passport.authenticate('jwt', { session: false }), mailRouter);
 
 app.use(handleError);
 const port = isProductionYesNo(APP_PORT, 3001);

@@ -15,7 +15,7 @@ import cookieParser from "cookie-parser";
 
 const {APP_PORT, APP_DOMAIN, APP_IP} = config;
 
-cron.schedule('0 0 0 1 * *', () => deleteOldFiles()); // ones per month
+cron.schedule('0 0 0 1 * *', () => deleteOldFiles()); // one per month
 
 const app = express();
 

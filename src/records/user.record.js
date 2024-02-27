@@ -88,7 +88,7 @@ export class UserRecord {
 
         } catch (error) {
             console.error('Error occurred during user search by id:', error);
-            throw new Error(`Nie udało się lub nie znaleziono użytkownika`);
+            throw new Error(`Nie udało się wyszukać użytkownika`);
         }
     }
 

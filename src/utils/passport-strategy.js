@@ -44,11 +44,15 @@ passport.use(new JwtStrategy({
     ]),
     secretOrKey: JWT_SECRET
 }, async (jwtPayload, done) => {
-    const user = await UserRecord.findOneById(jwtPayload.sub);
-    if (user) {
-        return done(null, user);
-    } else {
-        return done(null, false);
+    try {
+        const user = await UserRecord.findOneById(jwtPayload.sub);
+        if (user) {
+            return done(null, user);
+        } else {
+            return done(null, false);
+        }
+    } catch (error) {
+        return done(error);
     }
 }));
 

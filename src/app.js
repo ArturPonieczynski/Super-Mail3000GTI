@@ -10,7 +10,7 @@ import {rateLimiter} from "./utils/rate-limiter.js";
 import cron from 'node-cron';
 import {deleteOldFiles} from "./utils/cron-task.js";
 import {isProductionYesNo} from "./utils/is-production.js";
-import passport from "./utils/passport-strategy.js";
+import passport, {authenticateJwt} from "./utils/passport-strategy.js";
 import cookieParser from "cookie-parser";
 
 const {APP_PORT, APP_DOMAIN, APP_IP} = config;
@@ -48,7 +48,7 @@ const apiRouter = express.Router();
 app.use('/api', apiRouter);
 apiRouter.use('/home', passport.authenticate('jwt', { session: false }), homeRouter);
 apiRouter.use('/login', loginRouter);
-apiRouter.use('/email', passport.authenticate('jwt', { session: false }), mailRouter);
+apiRouter.use('/email', authenticateJwt, mailRouter);
 
 app.use(handleError);
 const port = isProductionYesNo(APP_PORT, 3001);

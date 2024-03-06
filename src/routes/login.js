@@ -47,6 +47,10 @@ loginRouter.post('/', (req, res, next) => {
 
             res.json({
                 ok: true,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                }
             });
 
         });

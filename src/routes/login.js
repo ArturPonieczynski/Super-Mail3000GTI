@@ -13,8 +13,14 @@ loginRouter.get(
     '/auth',
     passport.authenticate('jwt', {session: false}),
     (req, res) => {
-   res.json({ok: true, user: req.user.name});
-});
+        res.json({
+            ok: true,
+            user: {
+                id: req.user.id,
+                name: req.user.name
+            }
+        });
+    });
 
 loginRouter.post('/', (req, res, next) => {
 

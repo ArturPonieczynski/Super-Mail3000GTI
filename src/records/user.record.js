@@ -8,7 +8,7 @@ export class UserRecord {
     constructor(userRecordObj) {
         this.validate(userRecordObj);
         this.id = userRecordObj.id || uuid();
-        this.userName = userRecordObj.user_name;
+        this.name = userRecordObj.user_name;
         this.passwordHash = userRecordObj.password_hash || null;
         this.password = userRecordObj.password || null;
     }
@@ -35,7 +35,7 @@ export class UserRecord {
 
             await pool.execute("INSERT INTO `users` (`id`,`user_name`, `password_hash`) VALUES (:id, :user_name, :password_hash)", {
                 id: this.id,
-                user_name: this.userName,
+                user_name: this.name,
                 password_hash: this.passwordHash,
             });
 
@@ -88,7 +88,7 @@ export class UserRecord {
 
         } catch (error) {
             console.error('Error occurred during user search by id:', error);
-            throw new Error(`Nie udało się lub nie znaleziono użytkownika`);
+            throw new Error(`Nie udało się wyszukać użytkownika`);
         }
     }
 

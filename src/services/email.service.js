@@ -2,9 +2,9 @@ import {config} from "../config.js";
 import {transporter} from "../utils/email.config.js";
 import {ValidationError} from "../utils/error.js";
 import {getCorrectedDateTime, validateDateTime} from "./date.service.js";
+import {isProductionYesNo} from "../utils/is-production.js";
 
 const {
-    APP_ENV,
     MAX_SAFE_DELAY_MS,
     EMAIL_SEND_FROM_SMTP,
     APP_DEV_EMAIL,
@@ -31,7 +31,7 @@ export class EmailService {
     static async sendErrorEmail(rejectedEmail, message) {
         await transporter.sendMail({
             from: EMAIL_SEND_FROM_SMTP,
-            to: APP_ENV === 'production' ? EMAIL_SEND_FROM_SMTP : APP_DEV_EMAIL,
+            to: isProductionYesNo(EMAIL_SEND_FROM_SMTP, APP_DEV_EMAIL),
             subject: 'Error: ' + rejectedEmail,
             text: message,
         });
@@ -125,7 +125,7 @@ export class EmailService {
 
                 const selfMailData = {
                     ...mailData,
-                    to: APP_ENV === 'production' ? EMAIL_SEND_FROM_SMTP : APP_DEV_EMAIL,
+                    to: isProductionYesNo(EMAIL_SEND_FROM_SMTP, APP_DEV_EMAIL),
                     subject: `Wiadomość do: ${accepted} | ` + subject,
                     cc: '',
                     bcc: '',

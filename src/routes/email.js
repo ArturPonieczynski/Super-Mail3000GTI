@@ -18,7 +18,7 @@ mailRouter.get('/all', async (req, res) => {
 
 mailRouter.post('/', upload.single('file'), async (req, res) => {
     try {
-        EmailService.sendEmail(req); // this function will return promise till e-mail is actually sent
+        EmailService.sendEmail(req); // This function will return a promise until the email has been successfully dispatched
         res.json({ok: true});
     } catch (error) {
             console.error('Error occurred on path POST /api/email.', error);

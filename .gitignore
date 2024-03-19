@@ -5,3 +5,6 @@
 /tmp/
 /src/tmp.js
 .DS_Store
+/src/utils/safe-join.js
+uploads/*
+uploads-kopia
